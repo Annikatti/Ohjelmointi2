@@ -89,7 +89,7 @@ function haeAsiakkaat() {
     fetch(url, requestOptions)
         .then(response => response.json())//Muutetaan vastausteksti JSON-objektiksi
         .then(response => printItems(response))
-        .catch(errorText => console.error("Fetch failed: " + errorText));
+        .catch(errorText => errorToast('Asiakkaan listan päivitys epäonnistui'));
 }
 
 //Kirjoitetaan tiedot taulukkoon JSON-objektilistasta
@@ -105,4 +105,30 @@ function printItems(respObjList){
         htmlStr+="</tr>";
     }
     document.getElementById("tbody").innerHTML = htmlStr;
+}
+
+function successToast(succeessText) {
+    const toaster = document.getElementById('toaster');
+    toaster.innerHTML = succeessText;
+    toaster.classList.remove('hidden');
+    toaster.classList.add('success');
+    clearToaster();
+}
+
+function errorToast(errorText) {
+    const toaster = document.getElementById('toaster');
+    toaster.innerHTML = errorText;
+    toaster.classList.remove('hidden');
+    toaster.classList.add('failure');
+    clearToaster();
+}
+
+function clearToaster() {
+    const toaster = document.getElementById('toaster');
+    setTimeout(() => {
+        toaster.innerHTML="";
+        toaster.classList.add('hidden');
+        toaster.classList.remove('failure', 'success');
+    }, 3000);
+}
 }
