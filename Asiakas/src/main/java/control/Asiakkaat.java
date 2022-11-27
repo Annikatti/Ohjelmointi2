@@ -36,6 +36,14 @@ public class Asiakkaat extends HttpServlet {
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doDelete");
+        int id = Integer.parseInt(request.getParameter("id"));
+        
+        Dao dao = new Dao();
+        boolean success = dao.poistaAsiakas(id);
+        
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("{\"success\": " + success + "}");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

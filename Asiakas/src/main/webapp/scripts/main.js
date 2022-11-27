@@ -102,6 +102,7 @@ function printItems(respObjList){
         htmlStr+="<td>"+item.sukunimi+"</td>";
         htmlStr+="<td>"+item.puhelin+"</td>";
         htmlStr+="<td>"+item.sposti+"</td>";
+        htmlStr+="<td><button onclick='poistaAsiakas("+ item.id + ")'>Poista asiakas</button></td>";
         htmlStr+="</tr>";
     }
     document.getElementById("tbody").innerHTML = htmlStr;
@@ -180,6 +181,22 @@ function resetForm(form) {
         input.classList.remove('success', 'failure');
         input.valid = false;
     }
+}
+
+function poistaAsiakas(id) {
+    const url = `Asiakkaat?id=${id}`;
+    const requestOptions = {method: "DELETE"};
+
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(responseJSON => {
+            if (responseJSON.success) {
+                successToast('Asiakas poistettu onnistuneesti');
+                haeAsiakkaat();
+            } else {
+                errorToast('Asiakkaan poistaminen epäonnistui');
+            }
+        })
 }
 
 function formdataToJSON(formData) {

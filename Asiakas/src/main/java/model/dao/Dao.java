@@ -108,4 +108,24 @@ public class Dao {
         return success;
     }
     
+    public boolean poistaAsiakas(int id) {
+        System.out.println("poistaAsiakas");
+        String sql = "DELETE FROM asiakkaat WHERE id = ?";
+        boolean success = true;
+        try {
+            con=yhdista();
+            if(con!=null){ //jos yhteys onnistui
+                stmtPrep = con.prepareStatement(sql);
+                stmtPrep.setInt(1, id);
+                stmtPrep.executeUpdate();
+            }
+        } catch (Exception e) {
+            success = false;
+            e.printStackTrace();
+        } finally {
+            sulje();
+        }
+
+        return success;
+    }
 }
