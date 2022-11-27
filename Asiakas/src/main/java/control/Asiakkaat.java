@@ -11,6 +11,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "Asiakkaat", value = "/Asiakkaat/*")
 public class Asiakkaat extends HttpServlet {
@@ -29,15 +30,24 @@ public class Asiakkaat extends HttpServlet {
         out.println(strJSON);
     }
 
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doPut");
     }
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doDelete");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doPost");
+        String strJSONInput = request.getReader().lines().collect(Collectors.joining());
+        Asiakas asiakas = new Gson().fromJson(strJSONInput, Asiakas.class);
+
+        Dao dao = new Dao();
+        boolean success = dao.lisaaAsiakas(asiakas);
+
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("{\"success\": " + success + "}");
     }
 }

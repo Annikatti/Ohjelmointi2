@@ -107,6 +107,34 @@ function printItems(respObjList){
     document.getElementById("tbody").innerHTML = htmlStr;
 }
 
+function lisaaAsiakas() {
+    const form = document.getElementById('uusi-asiakas');
+    const formData = new FormData(form);
+    const asiakas = formdataToJSON(formData);
+    const url = "Asiakkaat";
+    const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: asiakas
+    };
+
+    if (!isValidForm(form)) {
+        return;
+    }
+
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(responseJSON => {
+            if (responseJSON.success) {
+                resetForm(form);
+                successToast('Asiakas lisätty onnistuneesti');
+                haeAsiakkaat();
+            } else {
+                errorToast('Asiakkaan lisääminen epäonnistui');
+            }
+        })
+}
+
 function successToast(succeessText) {
     const toaster = document.getElementById('toaster');
     toaster.innerHTML = succeessText;
@@ -131,4 +159,29 @@ function clearToaster() {
         toaster.classList.remove('failure', 'success');
     }, 3000);
 }
+
+function isValidForm(form) {
+    let isValid = true;
+
+    for (input of form.getElementsByTagName('input')) {
+        if (input.valid === false) {
+            isValid = false;
+            invalidInput(input);
+        };
+    }
+
+    return isValid;
+}
+
+function resetForm(form) {
+    form.reset();
+
+    for (input of form.getElementsByTagName('input')) {
+        input.classList.remove('success', 'failure');
+        input.valid = false;
+    }
+}
+
+function formdataToJSON(formData) {
+    return JSON.stringify(Object.fromEntries(formData.entries()));
 }
