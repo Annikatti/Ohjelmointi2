@@ -89,18 +89,27 @@ function haeAsiakkaat() {
 
 //Kirjoitetaan tiedot taulukkoon JSON-objektilistasta
 function printItems(respObjList){
-    //console.log(respObjList);
-    let htmlStr="";
+    const lista = document.getElementById("tbody");
+    lista.innerHTML = "";
+
     for(let item of respObjList){//yksi kokoelmalooppeista
-        htmlStr+="<tr id='rivi_"+item.id+"'>";
-        htmlStr+="<td>"+item.etunimi+"</td>";
-        htmlStr+="<td>"+item.sukunimi+"</td>";
-        htmlStr+="<td>"+item.puhelin+"</td>";
-        htmlStr+="<td>"+item.sposti+"</td>";
-        htmlStr+="<td><button onclick='poistaAsiakas("+ item.id + ")'>Poista asiakas</button></td>";
-        htmlStr+="</tr>";
+        lista.innerHTML +="<tr id='rivi_"+item.id+"'>" +
+            "<td><input id='" + item.id + "_etunimi' name='etunimi' type='text' value='" + item.etunimi + "'></td>" +
+            "<td><input id='" + item.id + "_sukunimi' name='sukunimi' type='text' value='"+ item.sukunimi + "'></td>" +
+            "<td><input id='" + item.id + "_puhelin' name='puhelin' type='tel' value='" + item.puhelin + "'></td>" +
+            "<td><input id='" + item.id + "_sposti' name='sposti' type='email' value='" + item.sposti + "'></td>" +
+            "<td class='hidden'><input id='" + item.id + "_id' name='id' type='number' value='" + item.id + "'></td>" +
+            "<td><button onclick='poistaAsiakas(" + item.id + ")'>Poista asiakas</button></td>" +
+            "<td><button onclick='paivitaAsiakastiedot(" + item.id + ")'>Päivitä asiakastiedot</button></td>" +
+            "</tr>";
+
+        window.requestAnimationFrame(() => {
+            addInputListener(`${item.id}_etunimi`, true, tarkistaNimi);
+            addInputListener(`${item.id}_sukunimi`, true, tarkistaNimi);
+            addInputListener(`${item.id}_puhelin`, true, tarkistaPuhelin);
+            addInputListener(`${item.id}_sposti`, true, tarkistaSposti);
+        });
     }
-    document.getElementById("tbody").innerHTML = htmlStr;
 }
 
 function lisaaAsiakas() {
@@ -129,6 +138,50 @@ function lisaaAsiakas() {
                 errorToast('Asiakkaan lisääminen epäonnistui');
             }
         })
+}
+
+function paivitaAsiakastiedot(id) {
+    const lomake = document.createElement("form");
+    lomake.appendChild(document.getElementById(`${id}_etunimi`));
+    lomake.appendChild(document.getElementById(`${id}_sukunimi`));
+    lomake.appendChild(document.getElementById(`${id}_puhelin`));
+    lomake.appendChild(document.getElementById(`${id}_sposti`));
+    lomake.appendChild(document.getElementById(`${id}_id`));
+    const asiakas = tarkistaLomake(lomake);
+
+    if (!asiakas) {
+        errorToast('Tarkista päivitettävän asiakkaan tiedot!');
+        haeAsiakkaat();
+        return;
+    }
+
+    const requestOptions = {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: asiakas
+    };
+
+    fetch("Asiakkaat", requestOptions)
+        .then(response => response.json())
+        .then(responseJSON => {
+            if (responseJSON.success) {
+                successToast('Asiakastiedot päivitetty onnistuneesti');
+                haeAsiakkaat();
+            } else {
+                errorToast('Asiakastietojen päivittäminen epäonnistui');
+            }
+        })
+}
+
+function tarkistaLomake(form) {
+    const formData = new FormData(form);
+    const jsonData = formdataToJSON(formData);
+
+    if (!isValidForm(form)) {
+        return false;
+    }
+
+    return jsonData;
 }
 
 function successToast(succeessText) {
