@@ -2,21 +2,16 @@ function formListeners() {
     const form = document.getElementById('uusi-asiakas');
     form.addEventListener('submit', (e) => e.preventDefault());
 
-    const etunimi = document.getElementById('etunimi');
-    etunimi.valid = false;
-    etunimi.addEventListener('input', () => tarkistaNimi(etunimi));
+    addInputListener('etunimi', false, tarkistaNimi);
+    addInputListener('sukunimi', false, tarkistaNimi);
+    addInputListener('puhelin', false, tarkistaPuhelin);
+    addInputListener('sposti', false, tarkistaSposti);
+}
 
-    const sukunimi = document.getElementById('sukunimi');
-    sukunimi.valid = false;
-    sukunimi.addEventListener('input', () => tarkistaNimi(sukunimi));
-
-    const puhelin = document.getElementById('puhelin');
-    puhelin.valid = false;
-    puhelin.addEventListener('input', () => tarkistaPuhelin(puhelin));
-
-    const sposti = document.getElementById('sposti');
-    sposti.valid = false;
-    sposti.addEventListener('input', () => tarkistaSposti(sposti));
+function addInputListener(id, isValid, validator) {
+    const input = document.getElementById(id);
+    input.valid = isValid;
+    input.addEventListener('input', () => validator(input));
 }
 
 //Funktio XSS-hyökkäysten estämiseksi (Cross-site scripting)
