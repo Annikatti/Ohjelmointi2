@@ -32,6 +32,15 @@ public class Asiakkaat extends HttpServlet {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doPut");
+        String strJSONInput = request.getReader().lines().collect(Collectors.joining());
+        Asiakas asiakas = new Gson().fromJson(strJSONInput, Asiakas.class);
+
+        Dao dao = new Dao();
+        boolean success = dao.muutaAsiakastietoja(asiakas);
+
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("{\"success\": " + success + "}");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

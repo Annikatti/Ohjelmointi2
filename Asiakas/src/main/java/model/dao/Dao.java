@@ -86,7 +86,7 @@ public class Dao {
 
     public boolean lisaaAsiakas(Asiakas asiakas) {
         System.out.println("lisaaAsiakas");
-        String sql = "INSERT INTO asiakkaat (etunimi, sukunimi, puhelin, sposti) VALUES (?, ?, ?, ?) ";
+        String sql = "INSERT INTO asiakkaat (etunimi, sukunimi, puhelin, sposti) VALUES (?, ?, ?, ?)";
         boolean success = true;
         try {
             con=yhdista();
@@ -122,6 +122,28 @@ public class Dao {
         } catch (Exception e) {
             success = false;
             e.printStackTrace();
+        } finally {
+            sulje();
+        }
+
+        return success;
+    }
+
+    public boolean muutaAsiakastietoja(Asiakas asiakas){
+        boolean success = true;
+        String sql = "UPDATE asiakkaat SET etunimi=?, sukunimi=?, puhelin=?, sposti=? WHERE id=?";
+        try {
+            con = yhdista();
+            stmtPrep=con.prepareStatement(sql);
+            stmtPrep.setString(1, asiakas.getEtunimi());
+            stmtPrep.setString(2, asiakas.getSukunimi());
+            stmtPrep.setString(3, asiakas.getPuhelin());
+            stmtPrep.setString(4, asiakas.getSposti());
+            stmtPrep.setInt(5, asiakas.getId());
+            stmtPrep.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            success=false;
         } finally {
             sulje();
         }
