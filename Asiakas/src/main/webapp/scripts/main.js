@@ -62,16 +62,20 @@ function validInput(input) {
     input.classList.remove('failure');
     input.classList.add('success');
 
-    const error = document.getElementById(`${input.id}-error`);
-    error.classList.add('hidden');
+    try {
+        const error = document.getElementById(`${input.id}-error`);
+        error.classList.add('hidden');
+    } catch (error) {}
 }
 
 function invalidInput(input) {
     input.valid = false;
     input.classList.add('failure');
 
-    const error = document.getElementById(`${input.id}-error`);
-    error.classList.remove('hidden');
+    try {
+        const error = document.getElementById(`${input.id}-error`);
+        error.classList.remove('hidden');
+    } catch (error) {}
 }
 
 //funktio tietojen hakemista varten. Kutsutaan backin GET metodia
