@@ -80,12 +80,11 @@ function invalidInput(input) {
 
 //funktio tietojen hakemista varten. Kutsutaan backin GET metodia
 function haeAsiakkaat() {
-    let url = "Asiakkaat";
     let requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
     };
-    fetch(url, requestOptions)
+    fetch("Asiakkaat", requestOptions)
         .then(response => response.json())//Muutetaan vastausteksti JSON-objektiksi
         .then(response => printItems(response))
         .catch(errorText => errorToast('Asiakkaan listan päivitys epäonnistui'));
@@ -118,20 +117,20 @@ function printItems(respObjList){
 
 function lisaaAsiakas() {
     const form = document.getElementById('uusi-asiakas');
-    const formData = new FormData(form);
-    const asiakas = formdataToJSON(formData);
-    const url = "Asiakkaat";
+    const asiakas = tarkistaLomake(form);
+
+    if (!asiakas) {
+        errorToast('Tarkista lomakkeen tiedot!');
+        return;
+    }
+
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: asiakas
     };
 
-    if (!isValidForm(form)) {
-        return;
-    }
-
-    fetch(url, requestOptions)
+    fetch("Asiakkaat", requestOptions)
         .then(response => response.json())
         .then(responseJSON => {
             if (responseJSON.success) {
@@ -215,7 +214,6 @@ function clearToaster() {
 
 function isValidForm(form) {
     let isValid = true;
-
     for (input of form.getElementsByTagName('input')) {
         if (input.valid === false) {
             isValid = false;
