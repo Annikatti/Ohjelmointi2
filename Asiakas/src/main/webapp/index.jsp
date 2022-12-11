@@ -71,11 +71,17 @@
         label output {
             margin-top: 5px;
         }
+
+        a {
+            color: red;
+        }
     </style>
 </head>
 <body>
 
 <output id="toaster" class="hidden"></output>
+
+<a href="login?logout=1">Kirjaudu ulos (<%out.print(session.getAttribute("kayttaja"));%>)</a>
 
 <form id="uusi-asiakas" onsubmit="lisaaAsiakas()">
     <h2>Uuden asiakkaan lisäys</h2>
