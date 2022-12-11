@@ -7,14 +7,15 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Dao {
-    private String db ="\\Myynti.sqlite";
+    private String db ="Myynti.sqlite";
     private Connection con;
     private PreparedStatement stmtPrep=null;
     private ResultSet rs = null;
 
     private Connection yhdista(){
         Connection con = null;
-        String path = System.getProperty("user.dir");
+        String path = System.getProperty("catalina.base");
+        path += "/webapps/";
         String url = "jdbc:sqlite:" + path + db;
         System.out.println(url);
         try {
