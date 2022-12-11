@@ -1,0 +1,52 @@
+package control;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import model.dao.Dao;
+
+@WebServlet(name = "login", value = "/login")
+public class Login extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    public Login() {
+        System.out.println("Login.Login()");
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Login.doGet()");
+        String logout = request.getParameter("logout");
+        if(logout!=null) {
+            HttpSession session = request.getSession(true);
+            session.invalidate();
+            response.sendRedirect("login.jsp");
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Login.doPost()");
+        String uid = request.getParameter("sposti");
+        String hashedPwd = request.getParameter("hashedPwd");
+
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        Dao dao = new Dao();
+        String nimi=dao.etsiAsiakas(uid, hashedPwd);
+
+        if(nimi != null) {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("kayttaja", nimi);
+            out.print("index.jsp");
+        } else {
+            out.print("login.jsp?unknown=1");
+        }
+    }
+}

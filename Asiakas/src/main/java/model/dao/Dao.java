@@ -150,4 +150,28 @@ public class Dao {
 
         return success;
     }
+
+    public String etsiAsiakas(String uid, String pwd) {
+        String nimi = null;
+        String sql="SELECT * FROM asiakkaat WHERE sposti=? AND salasana=?";
+        try {
+            con = yhdista();
+            if(con!=null){
+                stmtPrep = con.prepareStatement(sql);
+                stmtPrep.setString(1, uid);
+                stmtPrep.setString(2, pwd);
+                rs = stmtPrep.executeQuery();
+                if(rs.isBeforeFirst()){ //jos kysely tuotti dataa, eli asiakas löytyi
+                    rs.next();
+                    nimi = rs.getString("etunimi")+ " " +rs.getString("sukunimi");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            sulje();
+        }
+
+        return nimi;
+    }
 }
