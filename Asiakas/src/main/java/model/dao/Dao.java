@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Dao {
-    private String db ="\\Asiakas.sqlite";
+    private String db ="\\Myynti.sqlite";
     private Connection con;
     private PreparedStatement stmtPrep=null;
     private ResultSet rs = null;
@@ -20,7 +20,7 @@ public class Dao {
         try {
             Class.forName("org.sqlite.JDBC");
             con = DriverManager.getConnection(url);
-            // System.out.println("Yhteys avattu.");
+            System.out.println("Yhteys avattu.");
         } catch (Exception e){
             System.out.println("Yhteyden avaus epäonnistui.");
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class Dao {
     public ArrayList<Asiakas> listaaAsiakkaat() {
         System.out.println("listaaAsiakkaat");
         ArrayList<Asiakas> asiakaslista = new ArrayList<Asiakas>();
-        String sql = "SELECT * FROM asiakkaat ORDER BY id DESC ";
+        String sql = "SELECT * FROM asiakkaat ORDER BY asiakas_id DESC ";
         try {
             con=yhdista();
             if(con!=null){ //jos yhteys onnistui
@@ -110,7 +110,7 @@ public class Dao {
     
     public boolean poistaAsiakas(int id) {
         System.out.println("poistaAsiakas");
-        String sql = "DELETE FROM asiakkaat WHERE id = ?";
+        String sql = "DELETE FROM asiakkaat WHERE asiakas_id = ?";
         boolean success = true;
         try {
             con=yhdista();
@@ -131,7 +131,7 @@ public class Dao {
 
     public boolean muutaAsiakastietoja(Asiakas asiakas){
         boolean success = true;
-        String sql = "UPDATE asiakkaat SET etunimi=?, sukunimi=?, puhelin=?, sposti=? WHERE id=?";
+        String sql = "UPDATE asiakkaat SET etunimi=?, sukunimi=?, puhelin=?, sposti=? WHERE asiakas_id=?";
         try {
             con = yhdista();
             stmtPrep=con.prepareStatement(sql);
